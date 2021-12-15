@@ -13,23 +13,20 @@ thead th:first-child,
 tbody td:first-child {
   width: 2em;
 }
-
 thead th:nth-child(2),
-  tbody td:nth-child(2) {
-    width: 10em;
+tbody td:nth-child(2) {
+     width: 10em;
 }
 
 thead th:nth-child(4),
-  tbody td:nth-child(4) {
-    width: 6em;
+tbody td:nth-child(4) {
+     width: 6em;
 }
-
 thead th:nth-child(5),
-  tbody td:nth-child(5) {
+tbody td:nth-child(5) {
     width: 6em;
 }
-
 thead th:nth-child(6),
-  tbody td:nth-child(6) {
-    width: 6em;
+tbody td:nth-child(6) {
+     width: 6em;
 }
