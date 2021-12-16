@@ -1,3 +1,8 @@
+<?php session_start();
+if(isset($_SESSION['UserID']) && isset($_SESSION['UserName'])){
+ //header("Location: MainPage.php");   
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

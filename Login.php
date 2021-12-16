@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 
 extract($_POST);
 if(isset($_POST['Loginmail']) && isset($_POST['Loginpwd'])){
@@ -10,6 +12,9 @@ if(isset($_POST['Loginmail']) && isset($_POST['Loginpwd'])){
     $stmt->execute();
 
     if($stmt->rowCount() == 1){
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $_SESSION['UserID'] =  $row['fid'];
+        $_SESSION['UserName'] = $row['fUsername'];
         exit("success");
     }
     else{

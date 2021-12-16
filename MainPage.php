@@ -1,3 +1,5 @@
+<?php 
+session_start()?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +9,7 @@
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="CSS/Style.css">
+    <link rel="stylesheet" href="jquery-ui-1.13.0/jquery-ui.min.css">
 </head>
 <body>
 <!--NavBar Area Start-->
@@ -21,7 +24,7 @@
               <li class="nav-item">
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  姓名
+                  <?php echo $_SESSION['UserName']?>
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <li><a class="dropdown-item" href="#">登出</a></li>
@@ -39,17 +42,17 @@
     <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#addnewnotify">新增提醒事項</button>
     <button class="btn btn-primary">切換至已完成事項</button>
       <table class="table  table-striped table-hover">
-        <thead class="text-center">
+        <thead id="mainthead" class="text-center">
           <tr>
             <th>#</th>
-            <th>日期</th>
             <th>項目</th>
+            <th>備註</th>
             <th>詳情</th>
             <th>完成</th>
             <th>刪除</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="maintbody">
           <tr>
             <td class="text-center">1</td>
             <td class="text-center">345656456</td>
@@ -117,28 +120,41 @@
         <form>
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">提醒事項主題</label>
-            <input type="text" class="form-control" id="recipient-name">
+            <input type="text" class="form-control" id="Notifyevent">
           </div>
           <div class="mb-3">
             <label for="message-text" class="col-form-label">備註</label>
-            <textarea class="form-control" id="message-text"></textarea>
+            <textarea class="form-control" id="Remark"></textarea>
           </div>
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">是否計出提醒通知信?</label>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1">
+              <input class="form-check-input" type="radio" name="Emailoption" id="inlineRadio1" value="1">
               <label class="form-check-label" for="inlineRadio1">是</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="0" checked>
+              <input class="form-check-input" type="radio" name="Emailoption" id="inlineRadio2" value="0" checked>
               <label class="form-check-label" for="inlineRadio2">否</label>
             </div>
+          </div>
+          <div id="timepick" class=" row mb-3">
+              <label for="recipient-name" class="col-form-label">通知時間</label>
+              <input type="text" id="Datetime" name="NotifyDate" class="form-control mb-3 col" placeholder="日期">
+              <select id="NotifyTime" class="form-select form-select-lg mb-3 col" aria-label=".form-select-lg example">
+                <option name="originT" selected>時間</option>
+                <?php
+                for($i=1;$i<=24;$i++)
+                {
+                  echo "<option name='NotifyTime' value='$i:00'>$i:00</option>";
+                }
+                ?>
+              </select>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-        <button type="button" class="btn btn-primary">新增</button>
+        <button type="button" id="NotifySent" class="btn btn-primary">新增</button>
       </div>
     </div>
   </div>
@@ -148,5 +164,79 @@
 <!--JavaScript Area-->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="jquery-ui-1.13.0/jquery-ui.min.js"></script>
+<!--Sweetalert js-->
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  $(document).ready(function(){
+    $('#timepick').hide();
+    $('#Datetime').datepicker({ dateFormat: 'yy-mm-dd' });
+    $('#NotifySent').click(function(){NotifySend()});
+    $('input[type=radio][name="Emailoption"]').on("change",function(){
+      switch($(this).val()){
+        case'0':
+          $('#timepick').hide();
+          break
+        case'1':
+          $('#timepick').show();
+          break
+      }
+    })
+  })
+
+  function NotifySend(){
+    var Ntevent = $('#Notifyevent').val();
+    var Ntremark = $('#Remark').val();
+    var NtDate = "";
+    var NtTime = "";
+    var Checked = $('input[type=radio][name="Emailoption"]:checked').val()
+    if(Checked == "1")
+    {
+      NtDate = $('#Datetime').val();
+      NtTime = $('#NotifyTime option:selected').val();
+      if((NtDate== "")&& (NtTime == "時間"))
+      {
+        Swal.fire({
+          icon:"error",
+          title:"請選擇時間及日期"
+        })
+      }
+    }
+    $.ajax({
+      url:"Addnotify.php",
+      type:"post",
+      data:{
+        Ntevent : Ntevent,
+        Ntremark : Ntremark,
+        NtDate : NtDate,
+        NtTime : NtTime
+      },
+      success:function(data){
+        if(data == "successful")
+        {
+          Swal.fire({
+            icon:"success",
+            title:"新增成功"
+          }).then(function(){
+            $('#Notifyevent').val("");
+            $('#Remark').val("");
+            $('#Datetime').val("");
+            $('#NotifyTime option[name="originT"]').attr('selected');
+            $('#addnewnotify').modal('hide');
+          })
+        }
+      }
+      
+    })
+  }
+
+  function RefreshList(){
+    $.ajax({
+      url:""
+    })
+  }
+</script>
+
 </body>
 </html>

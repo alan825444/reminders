@@ -9,24 +9,24 @@ body{
     height: 100vh;
 }
 
-thead th:first-child,
-tbody td:first-child {
+#mainthead th:first-child,
+#maintbody td:first-child {
   width: 2em;
 }
-thead th:nth-child(2),
-tbody td:nth-child(2) {
-     width: 10em;
+#mainthead th:nth-child(2),
+#maintbody td:nth-child(2) {
+     width: 16em;
 }
 
-thead th:nth-child(4),
-tbody td:nth-child(4) {
+#mainthead th:nth-child(4),
+#maintbody td:nth-child(4) {
      width: 6em;
 }
-thead th:nth-child(5),
-tbody td:nth-child(5) {
+#mainthead th:nth-child(5),
+#maintbody td:nth-child(5) {
     width: 6em;
 }
-thead th:nth-child(6),
-tbody td:nth-child(6) {
+#mainthead th:nth-child(6),
+#maintbody td:nth-child(6) {
      width: 6em;
 }
