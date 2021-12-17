@@ -10,6 +10,7 @@ session_start()?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="CSS/Style.css">
     <link rel="stylesheet" href="jquery-ui-1.13.0/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
 </head>
 <body>
 <!--NavBar Area Start-->
@@ -39,9 +40,11 @@ session_start()?>
 <!--Main Area Start-->
 <div class="main-area BackGround_img mb-5 p-3">
   <div class="container mt-5 bg-light py-5 px-2">
+    <div class="mb-3">
     <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#addnewnotify">新增提醒事項</button>
     <button class="btn btn-primary">切換至已完成事項</button>
-      <table class="table  table-striped table-hover">
+    </div>
+      <table id="maintable" class="table  table-striped table-hover mt-3">
         <thead id="mainthead" class="text-center">
           <tr>
             <th>#</th>
@@ -53,39 +56,21 @@ session_start()?>
           </tr>
         </thead>
         <tbody id="maintbody">
-          <tr>
-            <td class="text-center">1</td>
-            <td class="text-center">345656456</td>
-            <td >完成專案版面架設</td>
-            <td class="text-center"><button class="btn btn-primary" >詳情</button></td>
-            <td class="text-center"><button class="btn btn-info">完成</button></td>
-            <td class="text-center"><button class="btn btn-danger">刪除</button></td>
-          </tr>
+         
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="6" class=""><label for="">代辦事項共計：</label></td>
+            <td colspan="6" class=""><label id="rowCount" for="">代辦事項共計：</label></td>
           </tr>
         </tfoot>
       </table>
-      <div class="">
-        <ul class="pagination justify-content-center">
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
+      <form class="row" action="">
+        <div class="col"></div>
+        <select id="pagenumber" class="form-select form-select-sm col" aria-label=".form-select-sm example">
+          <option selected>選擇分頁</option>
+        </select>
+        <div class="col"></div>
+      </form>
 
 </div>
 <!--Main Area End-->
@@ -154,7 +139,7 @@ session_start()?>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-        <button type="button" id="NotifySent" class="btn btn-primary">新增</button>
+        <button type="button"  id="NotifySent" class="btn btn-primary">新增</button>
       </div>
     </div>
   </div>
@@ -166,11 +151,13 @@ session_start()?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="jquery-ui-1.13.0/jquery-ui.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <!--Sweetalert js-->
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   $(document).ready(function(){
     $('#timepick').hide();
+    RefreshList()
     $('#Datetime').datepicker({ dateFormat: 'yy-mm-dd' });
     $('#NotifySent').click(function(){NotifySend()});
     $('input[type=radio][name="Emailoption"]').on("change",function(){
@@ -183,8 +170,17 @@ session_start()?>
           break
       }
     })
+    $('#pagenumber').change(function(){
+      console.log($('#pagenumber option:selected').val());
+    })
+    document.onclick = function(e){
+      var obj = event.srcElement;
+      if(obj.type=="button" && obj.value == "delete"){
+        alert(obj.id)
+      }
+    }
   })
-
+  //新增提醒事項
   function NotifySend(){
     var Ntevent = $('#Notifyevent').val();
     var Ntremark = $('#Remark').val();
@@ -224,18 +220,58 @@ session_start()?>
             $('#Datetime').val("");
             $('#NotifyTime option[name="originT"]').attr('selected');
             $('#addnewnotify').modal('hide');
-          })
+          }).then(RefreshList());
         }
       }
       
     })
   }
 
-  function RefreshList(){
-    $.ajax({
-      url:""
-    })
+  function Dellete(){
+
   }
+
+  //更新List表單
+  function RefreshList(){
+    $('#maintbody').empty();
+    $.ajax({
+     url: "RefreshList.php",
+     type: "post",
+     data:{
+       "mode" : "1"
+     },
+     dataType:"json",
+     success:function(data){
+       console.log(data);
+       $.each(data.data,function(n,v){
+         var str = "<tr>";
+         str+= `<td class="text-center">${v[0]}</td>`;
+         str+= `<td class="text-center">${v[1]}</td>`;
+         str+= `<td class="">${v[2]}</td>`;
+         str+= `<td class="text-center">${v[3]}</td>`;
+         str+= `<td class="text-center">${v[4]}</td>`;
+         str+= `<td class="text-center">${v[5]}</td>`;
+         $('#maintbody').append(str);
+       })
+       console.log(data.pages)
+       for(var i=1; i<=data.pages; i++)
+       {
+          var str = `<option value="${i}">${i}</option>`;
+          $('#pagenumber').append(str)
+       }
+       
+       $('#rowCount').text(`代辦事項共計：${data.rows}項`);
+     }
+   })
+  }
+  /*<tr>
+            <td class="text-center">1</td>
+            <td class="text-center">345656456</td>
+            <td >完成專案版面架設</td>
+            <td class="text-center"><button type="button" id="" class="btn btn-primary " >詳情</button></td>
+            <td class="text-center"><button class="btn btn-info">完成</button></td>
+            <td class="text-center"><button class="btn btn-danger">刪除</button></td>
+          </tr>*/
 </script>
 
 </body>

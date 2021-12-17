@@ -12,12 +12,14 @@ if(isset($_POST['Ntevent']) && isset($_POST['Ntremark']) & isset($_POST['NtDate'
         $Ntremark= $_POST['Ntremark'];
         $NtDate = $_POST['NtDate'];
         $NtTime = $_POST['NtTime'];
-        $stmt = $pdo->prepare("INSERT INTO T_Notify (fEvent, fRemark, fAlertdate, fAlerttime, fk_user) 
-        VALUES(:fEvent,:fRemark, :fAlertdate, :fAlerttime, :fk_user )");
+        $Ntbuilddate = date("Y-m-d");
+        $stmt = $pdo->prepare("INSERT INTO T_Notify (fEvent, fRemark, fAlertdate, fAlerttime, fbuilddate, fk_user) 
+        VALUES(:fEvent,:fRemark, :fAlertdate, :fAlerttime, :fbuilddate, :fk_user )");
         $stmt->bindParam(':fEvent',$Ntevent);
         $stmt->bindParam(':fRemark',$Ntremark);
         $stmt->bindParam(':fAlertdate',$NtDate);
         $stmt->bindParam(':fAlerttime',$NtTime);
+        $stmt->bindParam(':fbuilddate',$Ntbuilddate);
         $stmt->bindParam(':fk_user',$_SESSION['UserID']);
         $stmt->execute();
         if($stmt->rowcount()>0){
