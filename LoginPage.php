@@ -1,6 +1,9 @@
 <?php session_start();
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: *");
+header("Access-Control-Allow-Headers: Origin, Methods, Content-Type");
 if(isset($_SESSION['UserID']) && isset($_SESSION['UserName'])){
- //header("Location: MainPage.php");   
+ header("Location: MainPage.php");   
 }
 ?>
 <!DOCTYPE html>
@@ -10,8 +13,9 @@ if(isset($_SESSION['UserID']) && isset($_SESSION['UserName'])){
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="bootstrap-4.6.1-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="CSS/Style.css">
+    <link rel="stylesheet" href="jquery-ui-1.13.0/jquery-ui.min.css">
 </head>
 <body>
     <!--NavBar Area Start-->
@@ -21,13 +25,15 @@ if(isset($_SESSION['UserID']) && isset($_SESSION['UserName'])){
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
+          
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="#">登入</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">註冊</a>
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#Signin">註冊</a>
               </li>
               <!--
               <li class="nav-item dropdown">
@@ -54,13 +60,13 @@ if(isset($_SESSION['UserID']) && isset($_SESSION['UserName'])){
                 <img class="mb-4 mt-4" src="img/kisspng-royalty-free-logo-dragon-5af7c7409a9693.0700452215261878406332.png" alt="" width="72" height="72">
                 <h1 class="h3 mb-3 fw-normal">歡迎回來</h1>
             
-                <div class="form-floating">
-                    <input type="email" class="form-control" id="loginmail" placeholder="name@example.com">
-                    <label for="floatingInput">Email address</label>
+                <div class="form-floating text-left">
+                  <label for="loginmail">Email address</label>    
+                  <input type="email" class="form-control" id="loginmail" placeholder="name@example.com">  
                 </div>
-                <div class="form-floating">
-                    <input type="password" class="form-control" id="loginpwd" placeholder="Password">
-                    <label for="floatingPassword">Password</label>
+                <div class="form-floating mb-2 text-left">
+                  <label for="loginpwd">Password</label> 
+                  <input type="password" class="form-control" id="loginpwd" placeholder="Password">
                 </div>
                 <button class="w-100 btn btn-lg btn-primary" type="button" id="loginsent">登入</button>
                 <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
@@ -72,7 +78,7 @@ if(isset($_SESSION['UserID']) && isset($_SESSION['UserName'])){
     <!--Login Area End-->
 
     <!--modal Area start-->
-      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal fade" id="Signin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content text-center">
             <div class="modal-header ">
@@ -136,14 +142,17 @@ if(isset($_SESSION['UserID']) && isset($_SESSION['UserName'])){
     <!--Footer Area End-->
 
 <!--JavaScript Area-->
-<!--Bootstrap js-->
+<!--Bootstrap js
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
-<!--Jquery js-->
+Jquery js
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-<!--Sweetalert js-->
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+Sweetalert js
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="jquery-ui-1.13.0/jquery-ui.min.js"></script>
+<script src="bootstrap-4.6.1-dist/js/bootstrap.bundle.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
   $(document).ready(function(){
     $('#registsent').click(function(){regist()})
@@ -155,7 +164,7 @@ if(isset($_SESSION['UserID']) && isset($_SESSION['UserName'])){
     var Loginpwd = $('#loginpwd').val();
     if((Loginmail=="")||(Loginpwd==""))
     {
-      Swal.fire({
+      swal({
         icon:"error",
         title:"登入失敗",
         text:"請輸入正確的帳號密碼"
@@ -175,11 +184,16 @@ if(isset($_SESSION['UserID']) && isset($_SESSION['UserName'])){
         },
         success:function(data){
          if(data == "success"){
+           swal({
+             icon:"success",
+             title:"跳轉中請稍後",
+           }).then(function(){
+             window.location.href = "MainPage.php"
+           })
           console.log("yes");
-          //window.location.href = "";
          }
           else{
-            Swal.fire({
+            swal({
               icon:"error",
               title:"帳號或密碼輸入錯誤"
             })
@@ -206,7 +220,7 @@ if(isset($_SESSION['UserID']) && isset($_SESSION['UserName'])){
     }
     if((Username == "")||(Useremail == "")||(Userpwd == ""))
     {
-      Swal.fire({
+      swal({
         icon:"error",
         title: "請輸入內容"
       })
@@ -227,7 +241,7 @@ if(isset($_SESSION['UserID']) && isset($_SESSION['UserName'])){
         success:function(data,status){
           if(data == "success")
           {
-            Swal.fire({
+            swal({
               icon:"success",
               title:"註冊成功",
               text:"請直接登入"

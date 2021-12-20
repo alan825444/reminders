@@ -1,4 +1,6 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+
 include("function.php");
 
 $dsn = 'mysql:host=localhost;dbname=corp_reminders;charset=utf8';

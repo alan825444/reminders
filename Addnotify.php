@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+
 $Userid = $_SESSION['UserID'];
 
 
@@ -10,13 +11,15 @@ if(isset($_POST['Ntevent']) && isset($_POST['Ntremark']) & isset($_POST['NtDate'
         include('lib/config.php');
         $Ntevent = $_POST['Ntevent'];
         $Ntremark= $_POST['Ntremark'];
+        $Ntcheck = $_POST['Checked'];
         $NtDate = $_POST['NtDate'];
         $NtTime = $_POST['NtTime'];
         $Ntbuilddate = date("Y-m-d");
-        $stmt = $pdo->prepare("INSERT INTO T_Notify (fEvent, fRemark, fAlertdate, fAlerttime, fbuilddate, fk_user) 
-        VALUES(:fEvent,:fRemark, :fAlertdate, :fAlerttime, :fbuilddate, :fk_user )");
+        $stmt = $pdo->prepare("INSERT INTO T_Notify (fEvent, fRemark, fAlertCheck, fAlertdate, fAlerttime, fbuilddate, fk_user) 
+        VALUES(:fEvent,:fRemark, :fAlertCheck, :fAlertdate, :fAlerttime, :fbuilddate, :fk_user )");
         $stmt->bindParam(':fEvent',$Ntevent);
         $stmt->bindParam(':fRemark',$Ntremark);
+        $stmt->bindParam(':fAlertCheck',$Ntcheck);
         $stmt->bindParam(':fAlertdate',$NtDate);
         $stmt->bindParam(':fAlerttime',$NtTime);
         $stmt->bindParam(':fbuilddate',$Ntbuilddate);
