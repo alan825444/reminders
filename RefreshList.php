@@ -1,7 +1,6 @@
 <?php
 session_start();
 include('lib/config.php');
-include('lib/TodolistClass.php');
 $UserID = $_SESSION['UserID'];
 
 //refreshmode1( $_SESSION['UserID'],"N",1);
@@ -12,12 +11,12 @@ extract($_POST);
 if(isset($_POST['mode'])){
     switch($_POST['mode']){
         case "1":
-            refreshmode1($_SESSION['UserID'],"N",1);
+            refreshmode1($_SESSION['UserID'],$_POST['state'],$_POST['pagenumber']);
             break;
         case "2":
             $bool =  Delete($_POST["DeleteID"]);
             if($bool){
-                refreshmode1($_SESSION['UserID'],"N",1);
+                refreshmode1($_SESSION['UserID'],$_POST['state'],1);
             }
             break;
         case "3":
@@ -29,12 +28,25 @@ if(isset($_POST['mode'])){
 if(isset($_POST['Upmode'])){
     switch($_POST['Upmode']){
         case "1":
-
+            Revise($_POST['CHId'],$_POST['CHEvent'],$_POST['CHRemark'],$_POST['CHChcked'],$_POST['CHDate'],$_POST['CHTime']);
+            break;
+        case "2":
+            StateChange($_POST['EventID'],$_POST['Eventstate']);
             break;
     }
 }
-    
 
+function StateChange($ID,$State){
+    global $pdo;
+    $stmt = $pdo -> prepare("UPDATE T_Notify SET fstate = '$State' WHERE fid = $ID");
+    $stmt -> execute();
+    if($stmt->rowCount()>0){
+        echo 'success';
+    }
+    else{
+        echo 'fail';
+    }
+}
 
 function Delete($ID){
     
@@ -51,15 +63,20 @@ function refreshmode1($UserID,$fstate,$Page){
     //include('lib/config.php');
     global $pdo;
     $rowsStart = ($Page-1)*10;
-    $rowEnd = ($Page*10)-1;
+    $rowEnd = ($Page*10);
     $stmt = $pdo -> prepare("SELECT * FROM T_Notify WHERE fk_User = $UserID AND fstate = '$fstate' ORDER BY fbuilddate LIMIT $rowsStart, $rowEnd");
     $stmt->execute();
 
     $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $filtered_rwos = $stmt->rowCount();
+    $filtered_rwos = DataCount($UserID,$fstate);
     $count = 1;
     $finaldata = array();
-    $Page_count = $filtered_rwos/10 +1;
+    $Page_count = $filtered_rwos/10;
+    if($filtered_rwos%10 != 0)
+    {
+        $Page_count= $filtered_rwos/10 +1;
+    }
+    
 
     foreach($rs as $row){
         $data = array();
@@ -67,7 +84,7 @@ function refreshmode1($UserID,$fstate,$Page){
         $data[] = $row['fEvent'];
         $data[] = $row['fRemark'];
         $data[] = '<button value="detail" type="button" id="'.$row["fid"].'" class="btn btn-primary" data-toggle="modal" data-target="#NotifyDetail"">修改</button>';
-        $data[] = '<button type="button" id="'.$row["fid"].'" class="btn btn-info" >完成</button>';
+        $data[] = '<button value="complete" type="button" id="'.$row["fid"].'" class="btn btn-info" >完成</button>';
         $data[] = '<button value="delete" type="button" id="'.$row["fid"].'" class="btn btn-danger del" >刪除</button>';
         $data[] = $row['fAlertCheck'];
         $data[] = $row['fAlertdate'];
@@ -85,6 +102,14 @@ function refreshmode1($UserID,$fstate,$Page){
     echo json_encode($output,JSON_UNESCAPED_UNICODE) ;
 }
 
+function DataCount($UserID,$fstate){
+    global $pdo;
+    $stmt = $pdo -> prepare("SELECT * FROM T_Notify WHERE fk_User = $UserID AND fstate = '$fstate'");
+    $stmt->execute();
+    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return count($rs);
+}
+
 function DetailData($ID){
     global $pdo;
     $stmt = $pdo->prepare("SELECT * FROM T_Notify WHERE fid = $ID");
@@ -98,9 +123,9 @@ function DetailData($ID){
     echo json_encode($result,JSON_UNESCAPED_UNICODE);
 }
 
-function Revise($ID){
+function Revise($ID,$Event,$Remark,$Check,$Date,$Time){
     global $pdo;
-    $stmt = $pdo->prepare("UPDATE T_Notify SET fEvent=[value-2], fRemark=[value-3], fAlertCheck=[value-4],`fAlertdate`=[value-5],`fAlerttime`=[value-6] WHERE fid = $ID");
+    $stmt = $pdo->prepare("UPDATE T_Notify SET fEvent= '$Event', fRemark='$Remark', fAlertCheck='$Check', fAlertdate='$Date', fAlerttime='$Time' WHERE fid = $ID");
     $stmt -> execute();
     if($stmt->rowCount() > 0){
         echo "success";

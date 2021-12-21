@@ -20,14 +20,14 @@ if(!isset($_SESSION['UserID']) && !isset($_SESSION['UserName'])){
 </head>
 <body>
 <!--NavBar Area Start-->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
           <a class="navbar-brand align-text-center" href="#"><img width="30" height="30" class="d-inline-block align-text-center" src="img/kisspng-royalty-free-logo-dragon-5af7c7409a9693.0700452215261878406332.png" alt="">&emsp;提醒事項系統</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav ml-auto ">
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
                 <?php echo $_SESSION['UserName']?>
@@ -43,21 +43,24 @@ if(!isset($_SESSION['UserID']) && !isset($_SESSION['UserName'])){
 <!--NavBar Area End-->
 
 <!--Main Area Start  -->
-<div class="main-area BackGround_img mb-5 p-3">
-  <div class="container mt-5 bg-light py-5 px-2">
-    <div class="mb-3">
-    <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#AddNotifyModal">新增提醒事項</button>
-    <button class="btn btn-primary" id="SwitchCcomplete">切換至已完成事項</button>
+<div class="main-area BackGround_img py-3">
+  <div class="container mt-2 bg-light py-5 px-2">
+    <div class="mb-3 text-center">
+      <h3 id="Todo_or_yet">待辦事項 - 未完成</h3>
     </div>
-      <table id="maintable" class="table  table-striped table-hover mt-3">
+    <div class="mb-3">
+      <button id="Add_Notification_Btn" class="btn btn-danger" type="button" data-toggle="modal" data-target="#AddNotifyModal" >新增提醒事項</button>
+      <button class="btn btn-primary" id="SwitchCcomplete" value="N">查看已完成事項</button>
+    </div>
+      <table id="maintable" class="table  table-striped table-hover">
         <thead id="mainthead" class="text-center">
           <tr>
             <th>#</th>
             <th>項目</th>
             <th>備註</th>
-            <th>詳情</th>
-            <th>完成</th>
-            <th>刪除</th>
+            <th class="tablebtn">詳情</th>
+            <th class="tablebtn">完成</th>
+            <th class="tablebtn">刪除</th>
             <!--<th hidden>提醒Check</th>
             <th hidden>提醒日期</th>
             <th hidden>提醒時間</th>-->
@@ -75,30 +78,29 @@ if(!isset($_SESSION['UserID']) && !isset($_SESSION['UserName'])){
       <form class="row" action="">
         <div class="col"></div>
         <select id="pagenumber" class="form-select form-select-sm col" aria-label=".form-select-sm example">
-          <option selected>選擇分頁</option>
+          <option value="0">請選擇分頁</option>
         </select>
         <div class="col"></div>
       </form>
-
+  </div>
 </div>
 <!--Main Area End-->
 
 <!--Footer Area Start-->
-        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top container">
-          <p class="col-md-4 mb-0 text-muted">&copy; 2021 Company, Inc</p>
-      
-          <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-          </a>
-      
-          <ul class="nav col-md-4 justify-content-end">
+  <div class="bg-dark">    
+    <div class="container">
+        <footer class="py-3  ">
+          <ul class="nav col-md-4 justify-content-center border-bottom pb-3 mb-3 mx-auto">
             <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
             <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
             <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>
             <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
             <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
           </ul>
+          <p class="text-center text-muted">© 2021 Company, Inc</p>
         </footer>
+    </div>
+  </div>
 <!--Footer Area End-->
 
 <!--AddNotify Modal -->
@@ -242,6 +244,22 @@ weetalert js
 
 <script>
   $(document).ready(function(){
+    $('#SwitchCcomplete').click(function(){
+      var state = $('#SwitchCcomplete').val();
+      if(state == "Y"){
+        $('#SwitchCcomplete').val("N");
+        $('#SwitchCcomplete').text("查看已完成事項");
+        $('#Todo_or_yet').text("待辦事項 - 未完成")
+        $('#Add_Notification_Btn').removeAttr('disabled','true')
+      }
+      else{
+        $('#SwitchCcomplete').val("Y");
+        $('#SwitchCcomplete').text("查看未完成事項");
+        $('#Todo_or_yet').text("待辦事項 - 已完成")
+        $('#Add_Notification_Btn').attr('disabled','false')
+      }
+      RefreshList();
+    })
     $('#DetailChange').click(function(){NotifyChange()} );
     $('#timepick').hide();
     $('#Detailtimepick').hide();
@@ -270,7 +288,7 @@ weetalert js
       }
     })
     $('#pagenumber').change(function(){
-      console.log($('#pagenumber option:selected').val());
+      RefreshList();
     })
     document.onclick = function(e){
       var obj = event.srcElement;
@@ -278,7 +296,7 @@ weetalert js
         Delete(obj.id);
       }
       else if(obj.type == "button" && obj.value == "complete"){
-        alert(obj.id) ;
+        StateChange(obj.id) ;
       }
       else if(obj.type == "button" && obj.value == "detail"){
         console.log("click success");
@@ -291,6 +309,32 @@ weetalert js
     })
   })
 
+
+  //提交已完成項目
+  function StateChange(ID){
+    var state = $('#SwitchCcomplete').val();
+    if(state == "N")
+    {
+      state = "Y";
+    }
+    else{
+      state = "N";
+    }
+    $.ajax({
+      url:"RefreshList.php",
+      type:"post",
+      data:{
+        Upmode : 2,
+        EventID : ID,
+        Eventstate : state
+      },
+      success:function(data){
+        if(data == "success"){
+          RefreshList();
+        }
+      }
+    })
+  }
 
   //提醒事項修改
   function NotifyChange(){
@@ -305,9 +349,17 @@ weetalert js
     {
       CHDate = $('#DetailDatetime').val();
       CHTime = $('#DetailTime option:selected').val();
+      
     }
-    console.log(`${CHId},${CHEvent},${CHRemark},${CHChcked},${CHDate},${CHTime}`)
-    $.ajax({
+    if(CHChcked == "1" && (CHDate == "" || CHTime == "時間"))
+      {
+        swal({
+          icon:"error",
+          title:"請選擇時間及日期"
+        })
+      }
+    else{
+      $.ajax({
       url:"RefreshList.php",
       type:"post",
       data:{
@@ -319,11 +371,23 @@ weetalert js
         CHDate: CHDate,
         CHTime: CHTime
       },
-      dataType:"json",
       success:function(data){
-        console.log();
+        if(data =="success"){
+          swal({
+            icon:"success",
+            title:"修改成功"
+          }).then(function(){
+            $('#NotifyDetail').modal('hide');
+            RefreshList();
+          })
+        }
+        else{
+          $('#NotifyDetail').modal('hide');
+        }
       }
     })
+    }
+    
   }
 
   //顯示Detail的訊息
@@ -440,59 +504,71 @@ weetalert js
       },
       dataType:"json",
       success:function(data){
-        console.log(data);
-        $('#maintbody').empty();
-        $.each(data.data,function(n,v){
-         var str = "<tr>";
-         str+= `<td class="text-center">${v[0]}</td>`;
-         str+= `<td class="text-center">${v[1]}</td>`;
-         str+= `<td class="">${v[2]}</td>`;
-         str+= `<td class="text-center">${v[3]}</td>`;
-         str+= `<td class="text-center">${v[4]}</td>`;
-         str+= `<td class="text-center">${v[5]}</td>`;
-         $('#maintbody').append(str);
-       })
-       console.log(data.pages)
-       for(var i=1; i<=data.pages; i++)
-       {
-          var str = `<option value="${i}">${i}</option>`;
-          $('#pagenumber').append(str)
-       }
-       
-       $('#rowCount').text(`代辦事項共計：${data.rows}項`);
+        RefreshList();
       },
     })
   }
 
   //更新List表單
   function RefreshList(){
+    var state = $('#SwitchCcomplete').val();
+    var pagenumber = $('#pagenumber option:selected').val();
+    if(pagenumber == 0){
+      pagenumber++;
+    }
+    console.log(pagenumber);
     $('#maintbody').empty();
+    $('#pagenumber').empty();
     $.ajax({
      url: "RefreshList.php",
      type: "post",
      data:{
-       "mode" : "1"
+       "mode" : "1",
+       "pagenumber" : pagenumber,
+       "state" : state
      },
      dataType:"json",
      success:function(data){
        console.log(data);
-       $.each(data.data,function(n,v){
+       if(state == "N"){
+        $('.tablebtn').attr("hidden",false)
+        $.each(data.data,function(n,v){
          var str = "<tr>";
          str+= `<td class="text-center">${v[0]}</td>`;
          str+= `<td class="text-center">${v[1]}</td>`;
-         str+= `<td class="">${v[2]}</td>`;
+         str+= `<td class="text-center">${v[2]}</td>`;
          str+= `<td class="text-center">${v[3]}</td>`;
          str+= `<td class="text-center">${v[4]}</td>`;
          str+= `<td class="text-center">${v[5]}</td>`;
+         str+= "</tr>"
          $('#maintbody').append(str);
        })
+       }else{
+        $.each(data.data,function(n,v){
+          $('.tablebtn').attr("hidden",true)
+         var str = "<tr>";
+         str+= `<td class="text-center">${v[0]}</td>`;
+         str+= `<td class="text-center">${v[1]}</td>`;
+         str+= `<td class="text-center">${v[2]}</td>`;
+         str+= "</tr>"
+         $('#maintbody').append(str);
+       })
+       }
+       
        console.log(data.pages)
        for(var i=1; i<=data.pages; i++)
        {
           var str = `<option value="${i}">${i}</option>`;
           $('#pagenumber').append(str)
        }
-       
+       $('#pagenumber')[0].selectedIndex = pagenumber-1;
+       if(data.pages == 0){
+        $('#pagenumber').append("<option value='0'>無資料</option>");
+       }
+       else if(pagenumber > data.pages){
+        $('#pagenumber')[0].selectedIndex = pagenumber-2;
+        RefreshList()
+       }
        $('#rowCount').text(`代辦事項共計：${data.rows}項`);
      }
    })

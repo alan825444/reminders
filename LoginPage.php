@@ -19,15 +19,15 @@ if(isset($_SESSION['UserID']) && isset($_SESSION['UserName'])){
 </head>
 <body>
     <!--NavBar Area Start-->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-          <a class="navbar-brand align-text-center" href="#"><img width="30" height="30" class="d-inline-block align-text-center" src="img/kisspng-royalty-free-logo-dragon-5af7c7409a9693.0700452215261878406332.png" alt="">&emsp;提醒事項系統</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand align-text-center" href="#"><img width="30" height="30" class="d-inline-block align-text-center" src="img/kisspng-royalty-free-logo-dragon-5af7c7409a9693.0700452215261878406332.png" alt="">&emsp;提醒事項系統</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
               
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="#">登入</a>
@@ -51,6 +51,7 @@ if(isset($_SESSION['UserID']) && isset($_SESSION['UserName'])){
         </div>
       </nav>
     <!--NavBar Area End-->
+
     <!--Login Area Start-->
     <div class="BackGround_img">
       <div class=" text-center container " >
@@ -60,12 +61,12 @@ if(isset($_SESSION['UserID']) && isset($_SESSION['UserName'])){
                 <img class="mb-4 mt-4" src="img/kisspng-royalty-free-logo-dragon-5af7c7409a9693.0700452215261878406332.png" alt="" width="72" height="72">
                 <h1 class="h3 mb-3 fw-normal">歡迎回來</h1>
             
-                <div class="form-floating text-left">
-                  <label for="loginmail">Email address</label>    
+                <div class="form-floating text-left mb-3">
+                  <label for="loginmail">Email</label>    
                   <input type="email" class="form-control" id="loginmail" placeholder="name@example.com">  
                 </div>
                 <div class="form-floating mb-2 text-left">
-                  <label for="loginpwd">Password</label> 
+                  <label for="loginpwd">密碼</label> 
                   <input type="password" class="form-control" id="loginpwd" placeholder="Password">
                 </div>
                 <button class="w-100 btn btn-lg btn-primary" type="button" id="loginsent">登入</button>
@@ -122,23 +123,20 @@ if(isset($_SESSION['UserID']) && isset($_SESSION['UserName'])){
     <!--modal Area End-->
 
     <!--Footer Area Start-->
+    <div class="bg-dark">    
     <div class="container">
-        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-          <p class="col-md-4 mb-0 text-muted">&copy; 2021 Company, Inc</p>
-      
-          <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-          </a>
-      
-          <ul class="nav col-md-4 justify-content-end">
+        <footer class="py-3  ">
+          <ul class="nav col-md-4 justify-content-center border-bottom pb-3 mb-3 mx-auto">
             <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
             <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
             <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>
             <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
             <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
           </ul>
+          <p class="text-center text-muted">© 2021 Company, Inc</p>
         </footer>
-      </div>
+    </div>
+  </div>
     <!--Footer Area End-->
 
 <!--JavaScript Area-->

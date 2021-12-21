@@ -1,12 +1,8 @@
 /*login-page css*/
-body{
-    height: 100%;
-}
 
 .BackGround_img{
     background-image: url(BackGround.jpg);
-    background-size: 120%;
-    height: 100vh;
+    background-size: 100%;
 }
 
 #mainthead th:first-child,
@@ -15,7 +11,7 @@ body{
 }
 #mainthead th:nth-child(2),
 #maintbody td:nth-child(2) {
-     width: 16em;
+     width: 25em;
 }
 
 #mainthead th:nth-child(4),
