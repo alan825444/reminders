@@ -11,13 +11,10 @@ extract($_POST);
 if(isset($_POST['mode'])){
     switch($_POST['mode']){
         case "1":
-            refreshmode1($_SESSION['UserID'],$_POST['state'],$_POST['pagenumber']);
+            refreshmode1($_SESSION['UserID'],$_POST['state'],$_POST['pagenumber'],$_POST['Page_Event_Num']);
             break;
         case "2":
-            $bool =  Delete($_POST["DeleteID"]);
-            if($bool){
-                refreshmode1($_SESSION['UserID'],$_POST['state'],1);
-            }
+            Delete($_POST["DeleteID"]);
             break;
         case "3":
             DetailData($_POST["DetailID"]);
@@ -55,26 +52,26 @@ function Delete($ID){
     $stmt ->execute();
 
     if($stmt->rowCount()){
-        return true;
+        echo "success";
     }
 }
 
-function refreshmode1($UserID,$fstate,$Page){
+function refreshmode1($UserID,$fstate,$Page,$Page_Event_Num){
     //include('lib/config.php');
     global $pdo;
-    $rowsStart = ($Page-1)*10;
-    $rowEnd = ($Page*10);
-    $stmt = $pdo -> prepare("SELECT * FROM T_Notify WHERE fk_User = $UserID AND fstate = '$fstate' ORDER BY fbuilddate LIMIT $rowsStart, $rowEnd");
-    $stmt->execute();
 
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rowsStart = ($Page-1)*$Page_Event_Num;
+    $stmt = $pdo -> prepare("SELECT * FROM T_Notify WHERE fk_User = $UserID AND fstate = '$fstate' ORDER BY fbuilddate LIMIT $rowsStart, $Page_Event_Num");
+    $stmt->execute();
     $filtered_rwos = DataCount($UserID,$fstate);
-    $count = 1;
+    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    $count = $Page*$Page_Event_Num -($Page_Event_Num-1);
     $finaldata = array();
-    $Page_count = $filtered_rwos/10;
-    if($filtered_rwos%10 != 0)
+    $Page_count = $filtered_rwos/$Page_Event_Num;
+    if($filtered_rwos%$Page_Event_Num != 0)
     {
-        $Page_count= $filtered_rwos/10 +1;
+        $Page_count= $filtered_rwos/$Page_Event_Num +1;
     }
     
 
@@ -96,7 +93,7 @@ function refreshmode1($UserID,$fstate,$Page){
     $output = array(
         "data" => $finaldata,
         "pages" => $Page_count,
-        "rows" => $filtered_rwos
+        "rows" => $filtered_rwos,
     );
 
     echo json_encode($output,JSON_UNESCAPED_UNICODE) ;

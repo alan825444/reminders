@@ -11,7 +11,7 @@ if(!isset($_SESSION['UserID']) && !isset($_SESSION['UserName'])){
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>提醒事項</title>
     <!--link href="//cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"-->
     <link rel="stylesheet" href="bootstrap-4.6.1-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="CSS/Style.css">
@@ -48,9 +48,20 @@ if(!isset($_SESSION['UserID']) && !isset($_SESSION['UserName'])){
     <div class="mb-3 text-center">
       <h3 id="Todo_or_yet">待辦事項 - 未完成</h3>
     </div>
-    <div class="mb-3">
-      <button id="Add_Notification_Btn" class="btn btn-danger" type="button" data-toggle="modal" data-target="#AddNotifyModal" >新增提醒事項</button>
-      <button class="btn btn-primary" id="SwitchCcomplete" value="N">查看已完成事項</button>
+    <div class="mb-3 d-flex flex-row">
+      <div class="col">
+        <button id="Add_Notification_Btn" class="btn btn-danger" type="button" data-toggle="modal" data-target="#AddNotifyModal" >新增提醒事項</button>
+        <button class="btn btn-primary" id="SwitchCcomplete" value="N">查看已完成事項</button>
+      </div>
+      <div class="col d-flex flex-row justify-content-end">
+        <label for="" class="col-4 text-right">項目顯示數量：</label>
+        <input id="PEN_before_change" type="text" value="10" hidden>
+        <select id="PageEventNum" class="custom-select custom-select-sm col-4" aria-label=".form-select-sm example">
+          <option value="10" selected>10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+        </select>
+      </div>
     </div>
       <table id="maintable" class="table  table-striped table-hover">
         <thead id="mainthead" class="text-center">
@@ -69,19 +80,19 @@ if(!isset($_SESSION['UserID']) && !isset($_SESSION['UserName'])){
         <tbody id="maintbody">
          
         </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="6" class=""><label id="rowCount" for="">代辦事項共計：</label></td>
-          </tr>
-        </tfoot>
+
       </table>
-      <form class="row" action="">
-        <div class="col"></div>
-        <select id="pagenumber" class="form-select form-select-sm col" aria-label=".form-select-sm example">
-          <option value="0">請選擇分頁</option>
-        </select>
-        <div class="col"></div>
-      </form>
+          <div class="d-flex flex-row">
+            <div class="col">
+              <label id="rowCount" for="">代辦事項共計：</label>
+            </div>
+            <div class="col d-flex flex-row justify-content-end">
+              <label for="" class="col-4 text-right">頁次：</label>
+              <select id="pagenumber" class="custom-select custom-select-sm col-4 " aria-label=".form-select-sm example">
+                <option value="0">請選擇分頁</option>
+              </select>
+            </div>
+          </div>
   </div>
 </div>
 <!--Main Area End-->
@@ -117,11 +128,11 @@ if(!isset($_SESSION['UserID']) && !isset($_SESSION['UserName'])){
       <form>
           <div class="mb-3">
             <label for="Notifyevent" class="col-form-label">提醒事項主題</label>
-            <input type="text" class="form-control" id="Notifyevent">
+            <input type="text" class="form-control" value="" id="Notifyevent">
           </div>
           <div class="mb-3">
             <label for="Remark" class="col-form-label">備註</label>
-            <textarea class="form-control" id="Remark"></textarea>
+            <textarea class="form-control"  id="Remark"></textarea>
           </div>
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">是否計出提醒通知信?</label>
@@ -251,12 +262,14 @@ weetalert js
         $('#SwitchCcomplete').text("查看已完成事項");
         $('#Todo_or_yet').text("待辦事項 - 未完成")
         $('#Add_Notification_Btn').removeAttr('disabled','true')
+        $('#pagenumber')[0].selectedIndex = 0;
       }
       else{
         $('#SwitchCcomplete').val("Y");
         $('#SwitchCcomplete').text("查看未完成事項");
-        $('#Todo_or_yet').text("待辦事項 - 已完成")
-        $('#Add_Notification_Btn').attr('disabled','false')
+        $('#Todo_or_yet').text("待辦事項 - 已完成");
+        $('#Add_Notification_Btn').attr('disabled','false');
+        $('#pagenumber')[0].selectedIndex = 0;
       }
       RefreshList();
     })
@@ -290,10 +303,30 @@ weetalert js
     $('#pagenumber').change(function(){
       RefreshList();
     })
+    $('#PageEventNum').change(function(){
+      RefreshList();
+    })
     document.onclick = function(e){
       var obj = event.srcElement;
       if(obj.type=="button" && obj.value == "delete"){
-        Delete(obj.id);
+        swal({
+          icon:"warning",
+          title:"是否確定刪除",
+          buttons:{
+            cancle: {
+              text: "取消",
+              value: "no"
+            },
+            confirm: {
+              text : "確認",
+              value: "yes"
+            }
+          }
+        }).then(function(data){
+          if(data == "yes"){
+            Delete(obj.id);
+          }
+        })
       }
       else if(obj.type == "button" && obj.value == "complete"){
         StateChange(obj.id) ;
@@ -356,6 +389,12 @@ weetalert js
         swal({
           icon:"error",
           title:"請選擇時間及日期"
+        })
+      }
+      else if(CHEvent == ""){
+        swal({
+          icon:"warning",
+          title: "主題欄位不得為空"
         })
       }
     else{
@@ -452,6 +491,8 @@ weetalert js
     var NtDate = "";
     var NtTime = "";
     var Checked = $('input[type=radio][name="Emailoption"]:checked').val()
+    console.log(Ntevent);
+    console.log(Ntremark);
     if(Checked == "1")
     {
       NtDate = $('#Datetime').val();
@@ -464,7 +505,14 @@ weetalert js
         })
       }
     }
-    $.ajax({
+    else if(Ntevent = null){
+      swal({
+          icon:"error",
+          title:"提醒事項主題不得為空"
+        })
+    }
+    else{
+      $.ajax({
       url:"Addnotify.php",
       type:"post",
       data:{
@@ -488,9 +536,17 @@ weetalert js
             $('#AddNotifyModal').modal('hide');
           }).then(RefreshList());
         }
+        else{
+           swal({
+             icon:"warning",
+             title:"請確定主題不得為空"
+           })
+        }
       }
       
     })
+    }
+    
   }
 
   //刪除項目
@@ -502,9 +558,11 @@ weetalert js
         mode: "2",
         DeleteID : ID,
       },
-      dataType:"json",
       success:function(data){
-        RefreshList();
+        if(data == "success"){
+          RefreshList();
+        }
+        
       },
     })
   }
@@ -513,10 +571,16 @@ weetalert js
   function RefreshList(){
     var state = $('#SwitchCcomplete').val();
     var pagenumber = $('#pagenumber option:selected').val();
+    var PEN_before_change = $('#PEN_before_change').val();
+    var Page_Event_Num = $('#PageEventNum option:selected').val();
+    if(PEN_before_change != Page_Event_Num){
+      pagenumber = 1;
+      $('#PEN_before_change').val(`${Page_Event_Num}`);
+    }
+    
     if(pagenumber == 0){
       pagenumber++;
     }
-    console.log(pagenumber);
     $('#maintbody').empty();
     $('#pagenumber').empty();
     $.ajax({
@@ -525,7 +589,8 @@ weetalert js
      data:{
        "mode" : "1",
        "pagenumber" : pagenumber,
-       "state" : state
+       "state" : state,
+       "Page_Event_Num" : Page_Event_Num
      },
      dataType:"json",
      success:function(data){
@@ -570,6 +635,10 @@ weetalert js
         RefreshList()
        }
        $('#rowCount').text(`代辦事項共計：${data.rows}項`);
+       if($('#SwitchCcomplete').val() == "Y"){
+        $('#rowCount').text("");
+       }
+       
      }
    })
   }

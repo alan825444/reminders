@@ -84,7 +84,9 @@ if(isset($_SESSION['UserID']) && isset($_SESSION['UserName'])){
           <div class="modal-content text-center">
             <div class="modal-header ">
               <h5 class="modal-title" id="staticBackdropLabel">註冊</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
             <div class="modal-body">
               <form class="">
@@ -245,6 +247,12 @@ Sweetalert js
               text:"請直接登入"
             }).then(function(){
               window.location.href = "LoginPage.php"
+            })
+          }
+          else if(data == "RepeatEmail"){
+            swal({
+              icon:"error",
+              title:"此帳號已被註冊"
             })
           }
         }

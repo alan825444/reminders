@@ -33,8 +33,11 @@ if(isset($_POST['Ntevent']) && isset($_POST['Ntremark']) & isset($_POST['NtDate'
         }
     }
     else{
-        exit("no");
+        exit("fail");
     }
+}
+else{
+    exit("fail");
 }
 
 
