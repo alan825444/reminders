@@ -187,6 +187,7 @@ Sweetalert js
            swal({
              icon:"success",
              title:"跳轉中請稍後",
+             timer:1000
            }).then(function(){
              window.location.href = "MainPage.php"
            })

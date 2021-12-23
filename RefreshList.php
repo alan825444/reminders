@@ -79,7 +79,7 @@ function refreshmode1($UserID,$fstate,$Page,$Page_Event_Num){
         $data = array();
         $data[] = $count;
         $data[] = $row['fEvent'];
-        $data[] = $row['fRemark'];
+        $data[] = nl2br($row['fRemark']);
         $data[] = '<button value="detail" type="button" id="'.$row["fid"].'" class="btn btn-primary" data-toggle="modal" data-target="#NotifyDetail"">修改</button>';
         $data[] = '<button value="complete" type="button" id="'.$row["fid"].'" class="btn btn-info" >完成</button>';
         $data[] = '<button value="delete" type="button" id="'.$row["fid"].'" class="btn btn-danger del" >刪除</button>';

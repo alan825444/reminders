@@ -30,7 +30,7 @@ if(!isset($_SESSION['UserID']) && !isset($_SESSION['UserName'])){
             <ul class="navbar-nav ml-auto ">
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-                <?php echo $_SESSION['UserName']?>
+                <?php echo htmlspecialchars($_SESSION['UserName'])?>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <a class="dropdown-item" id="Logout" href="#">登出</a>
@@ -277,8 +277,18 @@ weetalert js
     $('#timepick').hide();
     $('#Detailtimepick').hide();
     RefreshList()
-    $('#Datetime').datepicker({ dateFormat: 'yy-mm-dd' });
-    $('#DetailDatetime').datepicker({ dateFormat: 'yy-mm-dd' });
+    $('#Datetime').datepicker({ 
+      dateFormat: 'yy-mm-dd',
+      changeMonth: true,
+      changeYear: true,
+      minDate : "0d" 
+      });
+    $('#DetailDatetime').datepicker({ 
+      dateFormat: 'yy-mm-dd',
+      changeMonth: true,
+      changeYear: true,
+      minDate : "0d"
+     });
     $('#NotifySent').click(function(){NotifySend()});
     $('input[type=radio][name="Emailoption"]').on("change",function(){
       switch($(this).val()){
@@ -491,8 +501,7 @@ weetalert js
     var NtDate = "";
     var NtTime = "";
     var Checked = $('input[type=radio][name="Emailoption"]:checked').val()
-    console.log(Ntevent);
-    console.log(Ntremark);
+    
     if(Checked == "1")
     {
       NtDate = $('#Datetime').val();
@@ -504,8 +513,43 @@ weetalert js
           title:"請選擇時間及日期"
         })
       }
+      else{
+        $.ajax({
+      url:"Addnotify.php",
+      type:"post",
+      data:{
+        Ntevent : Ntevent,
+        Ntremark : Ntremark,
+        Checked : Checked,
+        NtDate : NtDate,
+        NtTime : NtTime
+      },
+      success:function(data){
+        if(data == "successful")
+        {
+          swal({
+            icon:"success",
+            title:"新增成功"
+          }).then(function(){
+            $('#Notifyevent').val("");
+            $('#Remark').val("");
+            $('#Datetime').val("");
+            $('#NotifyTime')[0].selectedIndex = 0;
+            $('#AddNotifyModal').modal('hide');
+          }).then(RefreshList());
+        }
+        else{
+           swal({
+             icon:"warning",
+             title:"請確定主題不得為空"
+           })
+        }
+      }
+      
+    })
+      }
     }
-    else if(Ntevent = null){
+    else if(Ntevent == null){
       swal({
           icon:"error",
           title:"提醒事項主題不得為空"
@@ -577,10 +621,11 @@ weetalert js
       pagenumber = 1;
       $('#PEN_before_change').val(`${Page_Event_Num}`);
     }
-    
+    console.log(`before : ${pagenumber}`);
     if(pagenumber == 0){
-      pagenumber++;
+      pagenumber =1 ;
     }
+    console.log(`after : ${pagenumber}`);
     $('#maintbody').empty();
     $('#pagenumber').empty();
     $.ajax({
@@ -631,7 +676,7 @@ weetalert js
         $('#pagenumber').append("<option value='0'>無資料</option>");
        }
        else if(pagenumber > data.pages){
-        $('#pagenumber')[0].selectedIndex = pagenumber-2;
+        $('#pagenumber')[0].selectedIndex = 0;
         RefreshList()
        }
        $('#rowCount').text(`代辦事項共計：${data.rows}項`);

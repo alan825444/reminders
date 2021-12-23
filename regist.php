@@ -5,9 +5,9 @@ extract($_POST);
 if(isset($_POST['Username']) && isset($_POST['Useremail']) && isset($_POST['Userpwd']))
 {
     
-    $Username = $_POST['Username'];
-    $Useremail = $_POST['Useremail'];
-    $Userpwd = $_POST['Userpwd'];
+    $Username = trim($_POST['Username']);
+    $Useremail = trim($_POST['Useremail']);
+    $Userpwd = trim($_POST['Userpwd']);
     $stmt = $pdo->prepare("SELECT * FROM T_User WHERE fEmail = '$Useremail'");
     $stmt->execute();
     $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
