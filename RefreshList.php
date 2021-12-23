@@ -122,8 +122,8 @@ function DetailData($ID){
 
 function Revise($ID,$Event,$Remark,$Check,$Date,$Time){
     global $pdo;
-    $stmt = $pdo->prepare("UPDATE T_Notify SET fEvent= '$Event', fRemark='$Remark', fAlertCheck='$Check', fAlertdate='$Date', fAlerttime='$Time' WHERE fid = $ID");
-    $stmt -> execute();
+    $stmt = $pdo->prepare("UPDATE T_Notify SET fEvent = ?, fRemark = ?, fAlertCheck = ?, fAlertdate = ?, fAlerttime = ?  WHERE fid = $ID");
+    $stmt -> execute(array($Event,$Remark,$Check,$Date,$Time));
     if($stmt->rowCount() > 0){
         echo "success";
     }
